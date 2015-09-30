@@ -206,15 +206,14 @@ double MyModel::logLikelihood() const
 	return logL;
 
 
-//	for(size_t i=0; i<y.size(); i++)
-//	{
-//		var = sig[i]*sig[i] + extra_sigma*extra_sigma;
-//		logL += gsl_sf_lngamma(0.5*(nu + 1.)) - gsl_sf_lngamma(0.5*nu)
-//			- 0.5*log(M_PI*nu) - 0.5*log(var)
-//			- 0.5*(nu + 1.)*log(1. + pow(y[i] - mu[i], 2)/var/nu);
-//	}
+	//	for(size_t i=0; i<y.size(); i++)
+	//	{
+	//		var = sig[i]*sig[i] + extra_sigma*extra_sigma;
+	//		logL += gsl_sf_lngamma(0.5*(nu + 1.)) - gsl_sf_lngamma(0.5*nu)
+	//			- 0.5*log(M_PI*nu) - 0.5*log(var)
+	//			- 0.5*(nu + 1.)*log(1. + pow(y[i] - mu[i], 2)/var/nu);
+	//	}
 
-	return logL;
 }
 
 void MyModel::print(std::ostream& out) const
