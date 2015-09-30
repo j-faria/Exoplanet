@@ -88,14 +88,17 @@ void MyModel::calculate_mu()
 	else
 		staleness++;
 
-	double T, A, phi, v0, viewing_angle;
+	double T, A, phi, ecc, viewing_angle;
 	vector<double> arg, evaluations;
 	for(size_t j=0; j<components.size(); j++)
 	{
 		T = exp(components[j][0]);
 		A = components[j][1];
 		phi = components[j][2];
-		v0 = sqrt(1. - components[j][3]);
+		// ecc = 1 - v0^2
+		ecc = components[j][3];
+		//v0 = sqrt(1. - components[j][3]);
+		// longitude 
 		viewing_angle = components[j][4];
 		arg = t;
 		for(size_t i=0; i<arg.size(); i++)
