@@ -267,3 +267,89 @@ string MyModel::description() const
 	return string("");
 }
 
+
+
+// Radial-velocity signal
+vector<double> MyModel::radial_velocity
+		(const vector<double>& time, double T, double K, double e, double w, double X)
+{
+	vector<double> result(time.size());
+
+	for(size_t i=0; i<time.size(); i++)
+	{
+		//double f = true_anomaly(time[i], T, e, X);
+		//double v = K*( sin(f+w)+e*sin(w) );
+		//result[i] = v;
+		result[i] = 0.;
+	}
+	
+	return result;
+
+}
+
+
+// this function calculates eccentric anomaly
+double MyModel::ecc_anomaly(double time, double prd,double ecc,double peri_pass)
+{
+	time=time*86400.0;
+	double T=prd*86400.0;
+	double n=2.0*M_PI/T;
+	double tau=peri_pass*T;
+	double M=n*(time+tau);
+	double E0;// start value
+	double Mstar;// check equation  6.6.9 Danby
+	double sigma;
+	int  int_M2PI;
+	// to get an interger value for M/(2*PI)
+	// so that for M we have a value between 0 and 2PI
+	int_M2PI=M/(2.0*M_PI);
+	Mstar=M-int_M2PI*2.0*M_PI;
+
+	// define a SIGN function
+	if(sin(Mstar)<0)
+		sigma=-1*sin(Mstar);
+	else 
+		sigma=sin(Mstar);
+
+    E0=Mstar+sigma*0.85*ecc;
+  
+    // the value for k=0.85 is arbitrary
+    // the only condition is 0<= k <=1 check, again Danby   
+  
+    double TINY=1e-6;
+    int count=0;
+    for(;;)
+    {
+    
+		double eSinE=ecc*sin(E0);    // a dummy
+		double f=E0-eSinE-Mstar;
+		if(fabs(f)<TINY || count >100)
+			break;
+		double eCosE=ecc*cos(E0);
+		double f1=1-eCosE;
+		double f2=eSinE;
+		double f3=eCosE;
+		double dE0=-f/f1;
+		dE0=-f/(f1+0.5*dE0*f2);
+		dE0=-f/(f1+0.5*dE0*f2+dE0*dE0*f3/6);
+		E0=E0+dE0;
+		++count;
+    }
+  
+	return E0;
+}
+
+// this function calculates true anomaly
+double MyModel::true_anomaly(double time,double prd,double ecc,double peri_pass)
+{
+
+	double E = ecc_anomaly(time, prd, ecc, peri_pass);
+	double f = acos( (cos(E)-ecc)/( 1-ecc*cos(E) ) );
+	//acos gives the principal values ie [0:PI]
+	//when E goes above PI we need another condition
+	if(E>M_PI)
+	  f=2*M_PI-f;
+
+	return f;
+}
+
