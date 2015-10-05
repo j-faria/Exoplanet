@@ -121,29 +121,29 @@ double MyModel::perturb()
 		if(randomU() <= 0.25)
 		{
 			eta1 = log(eta1);
-			eta1 += log(1E4)*randh();
-			wrap(eta1, log(1E-2), log(1E2));
+			eta1 += log(1E4)*randh(); // range of prior support
+			wrap(eta1, log(1E-2), log(1E2)); // wrap around inside prior
 			eta1 = exp(eta1);
 		}
 		else if(randomU() <= 0.33330)
 		{
 			eta2 = log(eta2);
-			eta2 += log(1E4)*randh();
-			wrap(eta2, log(1E-3), log(1E1));
+			eta2 += log(1E4)*randh(); // range of prior support
+			wrap(eta2, log(1E-3), log(1E1)); // wrap around inside prior
 			eta2 = exp(eta2);
 		}
 		else if(randomU() <= 0.5)
 		{
 			eta3 = log(eta3);
-			eta3 += log(1E2)*randh();
-			wrap(eta3, log(1.), log(1E2));
+			eta3 += log(1E2)*randh(); // range of prior support
+			wrap(eta3, log(1.), log(1E2)); // wrap around inside prior
 			eta3 = exp(eta3);
 		}
 		else
 		{
 			eta4 = log(eta4);
-			eta4 += log(1E4)*randh();
-			wrap(eta4, log(1E-3), log(1E1));
+			eta4 += log(1E4)*randh(); // range of prior support
+			wrap(eta4, log(1E-3), log(1E1)); // wrap around inside prior
 			eta4 = exp(eta4);
 		}
 		calculate_C();
@@ -180,11 +180,14 @@ double MyModel::logLikelihood() const
 	// Get the data
 	const vector<double>& y = Data::get_instance().get_y();
 
+	// residual vector (observed y minus model y)
 	VectorXd residual(y.size());
 	for(size_t i=0; i<y.size(); i++)
 		residual(i) = y[i] - mu[i];
 
+	// perform the cholesky decomposition of C
 	Eigen::LLT<Eigen::MatrixXd> cholesky = C.llt();
+	// get the lower triangular matrix L
 	MatrixXd L = cholesky.matrixL();
 
 	double logDeterminant = 0.;
@@ -208,15 +211,15 @@ double MyModel::logLikelihood() const
 	return logL;
 
 
-//	for(size_t i=0; i<y.size(); i++)
-//	{
-//		var = sig[i]*sig[i] + extra_sigma*extra_sigma;
-//		logL += gsl_sf_lngamma(0.5*(nu + 1.)) - gsl_sf_lngamma(0.5*nu)
-//			- 0.5*log(M_PI*nu) - 0.5*log(var)
-//			- 0.5*(nu + 1.)*log(1. + pow(y[i] - mu[i], 2)/var/nu);
-//	}
+	//	for(size_t i=0; i<y.size(); i++)
+	//	{
+	//		var = sig[i]*sig[i] + extra_sigma*extra_sigma;
+	//		logL += gsl_sf_lngamma(0.5*(nu + 1.)) - gsl_sf_lngamma(0.5*nu)
+	//			- 0.5*log(M_PI*nu) - 0.5*log(var)
+	//			- 0.5*(nu + 1.)*log(1. + pow(y[i] - mu[i], 2)/var/nu);
+	//	}
 
-	return logL;
+	// return logL;
 }
 
 void MyModel::print(std::ostream& out) const
@@ -263,8 +266,8 @@ void MyModel::print(std::ostream& out) const
 	out.precision(8);
 
 
-	//for(size_t i=0; i<signal.size(); i++)
-	//	out<<signal[i]<<' ';
+	for(size_t i=0; i<signal.size(); i++)
+		out<<signal[i]<<' ';
 	out<<extra_sigma<<'\t'<<eta1<<'\t'<<eta2<<'\t'<<eta3<<'\t'<<eta4<<'\t';
 	objects.print(out); out<<' '<<staleness<<' ';
 	out<<background<<' ';
@@ -272,6 +275,6 @@ void MyModel::print(std::ostream& out) const
 
 string MyModel::description() const
 {
-	return string("extra_sigma	eta1	eta2	eta3	eta4	objects.print	staleness 	background");
+	return string("signal	extra_sigma 	eta1	eta2	eta3	eta4	objects.print	staleness 	background");
 }
 
