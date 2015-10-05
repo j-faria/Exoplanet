@@ -18,6 +18,7 @@
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
+import linecache
 
 def logsumexp(values):
 	biggest = np.max(values)
@@ -38,6 +39,8 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 		levels_orig = np.atleast_2d(np.loadtxt("levels.txt"))
 		sample_info = np.atleast_2d(np.loadtxt("sample_info.txt"))
 		sample = np.atleast_2d(np.loadtxt("sample.txt"))
+
+		sample_file_header = linecache.getline('sample.txt', 2)[2:]
 		#if(sample.shape[0] == 1):
 		#	sample = sample.T
 	else:
@@ -226,7 +229,8 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 				break
 		posterior_sample[i,:] = sample[which,:]
 	if save:
-		np.savetxt("posterior_sample.txt", posterior_sample)
+		np.savetxt("posterior_sample.txt", posterior_sample,
+			       header='Posterior samples file. One sample per line\n' + sample_file_header)
 
 	if plot:
 		if numResampleLogX > 1:
