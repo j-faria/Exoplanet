@@ -11,7 +11,7 @@ using namespace Eigen;
 using namespace DNest3;
 
 MyModel::MyModel()
-:objects(5, 10, false, MyDistribution())
+:objects(5, 2, false, MyDistribution())
 ,mu(Data::get_instance().get_t().size())
 ,C(Data::get_instance().get_t().size(),
 			Data::get_instance().get_t().size())
@@ -258,9 +258,14 @@ void MyModel::print(std::ostream& out) const
 			signal[i] += A*evaluations[i];
 	}
 
+	// output presision
+	out.setf(ios::fixed,ios::floatfield);
+	out.precision(8);
+
+
 	//for(size_t i=0; i<signal.size(); i++)
 	//	out<<signal[i]<<' ';
-	out<<extra_sigma<<' '<<eta1<<' '<<eta2<<' '<<eta3<<' '<<eta4<<' ';
+	out<<extra_sigma<<'\t'<<eta1<<'\t'<<eta2<<'\t'<<eta3<<'\t'<<eta4<<'\t';
 	objects.print(out); out<<' '<<staleness<<' ';
 	out<<background<<' ';
 }
