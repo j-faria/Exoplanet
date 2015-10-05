@@ -258,8 +258,8 @@ void MyModel::print(std::ostream& out) const
 			signal[i] += A*evaluations[i];
 	}
 
-	for(size_t i=0; i<signal.size(); i++)
-		out<<signal[i]<<' ';
+	//for(size_t i=0; i<signal.size(); i++)
+	//	out<<signal[i]<<' ';
 	out<<extra_sigma<<' '<<eta1<<' '<<eta2<<' '<<eta3<<' '<<eta4<<' ';
 	objects.print(out); out<<' '<<staleness<<' ';
 	out<<background<<' ';
@@ -267,6 +267,6 @@ void MyModel::print(std::ostream& out) const
 
 string MyModel::description() const
 {
-	return string("");
+	return string("extra_sigma	eta1	eta2	eta3	eta4	objects.print	staleness 	background");
 }
 
