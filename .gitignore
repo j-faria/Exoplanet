@@ -13,3 +13,5 @@ weights.txt
 Orbits/*.dat
 *.pyc
 texput.log
+*.o
+
