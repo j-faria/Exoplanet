@@ -14,7 +14,7 @@ for v0 in linspace(0.4, 1., 121):
 
 	keep = empty((steps, 2))
 
-	ion()
+	# ion()
 	for i in xrange(0, steps):
 	  phi1 = arctan2(pos[1], pos[0])
 
@@ -27,18 +27,19 @@ for v0 in linspace(0.4, 1., 121):
 	  phi2 = arctan2(pos[1], pos[0])
 
 	  if i%50 == 0:
-	    hold(False)
-	    plot(keep[0:(i+1), 0], keep[0:(i+1), 1], 'bo')
-	    hold(True)
-	    plot(0, 0, 'r*')
-	    axis('equal')
-	    draw()
+	  	pass
+	    # hold(False)
+	    # plot(keep[0:(i+1), 0], keep[0:(i+1), 1], 'bo')
+	    # hold(True)
+	    # plot(0, 0, 'r*')
+	    # axis('equal')
+	    # draw()
 
 	  if phi1 < 0. and phi2 > 0.:
 	    keep = keep[0:(i+1), :]
 	    break
-	 
+	
 	savetxt('Orbits/orbits' + '{v:.3f}'.format(v=v0) + '.dat', keep)
-ioff()
-show()
+# ioff()
+# show()
 
