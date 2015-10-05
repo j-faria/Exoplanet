@@ -1,5 +1,6 @@
 from pylab import *
 import os
+import sys
 
 rc("font", size=14, family="serif", serif="Computer Sans")
 rc("text", usetex=True)
@@ -8,15 +9,40 @@ data = loadtxt('fake_data_like_nuoph.txt')
 truth = loadtxt('fake_data_like_nuoph.truth')
 posterior_sample = atleast_2d(loadtxt('posterior_sample.txt'))
 
-hist(posterior_sample[:,1010], 100)
+start_objects_print = 5
+# how many parameters per component
+n_dimensions = int(posterior_sample[0, start_objects_print])
+# maximum number of components
+max_components = int(posterior_sample[0, start_objects_print+1])
+
+n_dist_print = 3
+
+index_component = start_objects_print + 1 + n_dist_print + 1
+
+hist(posterior_sample[:,index_component], 100)
 xlabel('Number of Planets')
 ylabel('Number of Posterior Samples')
 xlim([-0.5, 10.5])
-show()
+# show()
 
-T = posterior_sample[:,1011:1021]
-A = posterior_sample[:,1021:1031]
-E = posterior_sample[:,1041:1051]
+# periods
+i1 = 0*max_components + index_component + 1
+i2 = 0*max_components + index_component + max_components + 1
+s = np.s_[i1 : i2]
+T = posterior_sample[:,s]
+
+# amplitudes
+i1 = 1*max_components + index_component + 1
+i2 = 1*max_components + index_component + max_components + 1
+s = np.s_[i1 : i2]
+A = posterior_sample[:,s]
+
+# eccentricities
+i1 = 3*max_components + index_component + 1
+i2 = 3*max_components + index_component + max_components + 1
+s = np.s_[i1 : i2]
+E = posterior_sample[:,s]
+
 which = T != 0
 T = T[which].flatten()
 A = A[which].flatten()
@@ -27,54 +53,55 @@ E = E[which].flatten()
 #iqr = right - left
 #s = s[logical_and(s > middle - 5*iqr, s < middle + 5*iqr)]
 
-hist(T/log(10.), 500, alpha=0.5)
-xlabel(r'$\log_{10}$(Period/days)')
-xlim([0, 5])
+figure()
+hist(np.exp(T), bins=np.logspace(min(T), max(T), base=np.e), alpha=0.5)
+xlabel(r'(Period/days)')
+gca().set_xscale("log")
 #for i in xrange(1009, 1009 + int(truth[1008])):
 #  axvline(truth[i]/log(10.), color='r')
 ylabel('Number of Posterior Samples')
-show()
+# show()
 
+figure()
 subplot(2,1,1)
 #plot(truth[1009:1009 + int(truth[1008])]/log(10.), log10(truth[1018:1018 + int(truth[1008])]), 'ro', markersize=7)
 #hold(True)
-plot(T/log(10.), log10(A), 'b.', markersize=1)
-xlim([0, 5])
-ylim([-1, 3])
-ylabel(r'$\log_{10}$[Amplitude (m/s)$]$')
+loglog(np.exp(T), A, 'b.', markersize=5)
+ylabel(r'Amplitude (m/s)')
 
 subplot(2,1,2)
 #plot(truth[1009:1009 + int(truth[1008])]/log(10.), truth[1038:1038 + int(truth[1008])], 'ro', markersize=7)
 #hold(True)
-plot(T/log(10.), E, 'b.', markersize=1)
-xlabel(r'$\log_{10}$(Period/days)')
+semilogx(np.exp(T), E, 'b.', markersize=5)
+xlabel(r'(Period/days)')
 ylabel('Eccentricity')
-xlim([0, 5])
 show()
 
-data[:,0] -= data[:,0].min()
-t = linspace(data[:,0].min(), data[:,0].max(), 1000)
+sys.exit(0)
 
-saveFrames = False # For making movies
-if saveFrames:
-  os.system('rm Frames/*.png')
+# data[:,0] -= data[:,0].min()
+# t = linspace(data[:,0].min(), data[:,0].max(), 1000)
 
-ion()
-for i in xrange(0, posterior_sample.shape[0]):
-  hold(False)
-  errorbar(data[:,0], data[:,1], fmt='b.', yerr=data[:,2])
-  hold(True)
-  plot(t, posterior_sample[i, 0:1000], 'r')
-  xlim([-0.05*data[:,0].max(), 1.05*data[:,0].max()])
-  ylim([-1.5*max(abs(data[:,1])), 1.5*max(abs(data[:,1]))])
-  #axhline(0., color='k')
-  xlabel('Time (days)', fontsize=16)
-  ylabel('Radial Velocity (m/s)', fontsize=16)
-  draw()
-  if saveFrames:
-    savefig('Frames/' + '%0.4d'%(i+1) + '.png', bbox_inches='tight')
-    print('Frames/' + '%0.4d'%(i+1) + '.png')
+# saveFrames = False # For making movies
+# if saveFrames:
+#   os.system('rm Frames/*.png')
+
+# ion()
+# for i in xrange(0, posterior_sample.shape[0]):
+#   hold(False)
+#   errorbar(data[:,0], data[:,1], fmt='b.', yerr=data[:,2])
+#   hold(True)
+#   plot(t, posterior_sample[i, 0:1000], 'r')
+#   xlim([-0.05*data[:,0].max(), 1.05*data[:,0].max()])
+#   ylim([-1.5*max(abs(data[:,1])), 1.5*max(abs(data[:,1]))])
+#   #axhline(0., color='k')
+#   xlabel('Time (days)', fontsize=16)
+#   ylabel('Radial Velocity (m/s)', fontsize=16)
+#   draw()
+#   if saveFrames:
+#     savefig('Frames/' + '%0.4d'%(i+1) + '.png', bbox_inches='tight')
+#     print('Frames/' + '%0.4d'%(i+1) + '.png')
 
 
-ioff()
-show()
+# ioff()
+# show()
