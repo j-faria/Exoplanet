@@ -13,8 +13,12 @@ MyDistribution::MyDistribution()
 void MyDistribution::fromPrior()
 {
 	// Cauchy prior centered on 5.901 = log(365 days).
+	// truncated to (-15.3, 27.1)
 	center = 5.901 + tan(M_PI*(0.97*randomU() - 0.485));
+	// uniform prior between 0.1 and 3
 	width = 0.1 + 2.9*randomU();
+	// standard Cauchy prior for log(mu)
+	// truncated to (-21.2, 21.2)
 	mu = exp(tan(M_PI*(0.97*randomU() - 0.485)));
 }
 
