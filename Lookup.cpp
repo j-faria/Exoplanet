@@ -32,6 +32,7 @@ void Lookup::load()
 		o.load(filename.c_str());
 		orbits.push_back(o);
 	}
+	cout<<"# Loaded orbit files"<<endl;
 }
 
 vector<double> Lookup::evaluate
