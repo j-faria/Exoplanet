@@ -40,7 +40,16 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 		sample_info = np.atleast_2d(np.loadtxt("sample_info.txt"))
 		sample = np.atleast_2d(np.loadtxt("sample.txt"))
 
-		sample_file_header = linecache.getline('sample.txt', 2)[2:]
+		# I believe this is the fastest way to get the 2nd line 
+		# and doesn't load the whole file into memory
+		fp = open('sample.txt')
+		for i, line in enumerate(fp):
+			if i==1: 
+				sample_file_header = line
+			elif i>2: 
+				break
+		fp.close()
+
 		#if(sample.shape[0] == 1):
 		#	sample = sample.T
 	else:
@@ -237,5 +246,5 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 			plt.ioff()
 		plt.show()
 
-	return [logz_estimate, H_estimate, logx_samples]
+	return [logz_estimate, H_estimate, logx_samples, posterior_sample]
 
