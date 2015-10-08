@@ -28,17 +28,19 @@ void MyModel::fromPrior()
 
 	extra_sigma = exp(tan(M_PI*(0.97*randomU() - 0.485)));
 
-	// Log-uniform prior from 10^(-2) to 10^2 m/s
-	eta1 = exp(log(1E-2) + log(1E4)*randomU());
+	// Log-uniform prior from 10^(-1) to 10 m/s
+	eta1 = exp(log(1E-1) + log(1E2)*randomU());
 
-	// Log-uniform prior from 10^(-3) to 10 years
-	eta2 = exp(log(1E-3) + log(1E4)*randomU());
+	// Log-uniform prior from 10^(0) to 100 days
+	eta2 = exp(log(1.) + log(1E2)*randomU());
 
-	// Log-uniform prior from 1 day to 100 days
-	eta3 = exp(log(1.) + log(1E2)*randomU());
+	// Log-uniform prior from 10 days to 30 days
+	/*eta3 = exp(log(10.) + log(20.)*randomU());*/
+	// or uniform prior between 10 and 40 days
+	eta3 = 10. + 30.*randomU();
 
-	// Log-uniform prior from 10^(-3) to 10 years
-	eta4 = exp(log(1E-3) + log(1E4)*randomU());
+	// Log-uniform prior from 10^(-1) to 10 (fraction of eta3)
+	eta4 = exp(log(1E-1) + log(1E2)*randomU());
 
 
 	calculate_mu();
@@ -121,29 +123,29 @@ double MyModel::perturb()
 		if(randomU() <= 0.25)
 		{
 			eta1 = log(eta1);
-			eta1 += log(1E4)*randh(); // range of prior support
-			wrap(eta1, log(1E-2), log(1E2)); // wrap around inside prior
+			eta1 += log(1E2)*randh(); // range of prior support
+			wrap(eta1, log(1E-1), log(10.)); // wrap around inside prior
 			eta1 = exp(eta1);
 		}
 		else if(randomU() <= 0.33330)
 		{
 			eta2 = log(eta2);
-			eta2 += log(1E4)*randh(); // range of prior support
-			wrap(eta2, log(1E-3), log(1E1)); // wrap around inside prior
+			eta2 += log(1E2)*randh(); // range of prior support
+			wrap(eta2, log(1.), log(1E2)); // wrap around inside prior
 			eta2 = exp(eta2);
 		}
 		else if(randomU() <= 0.5)
 		{
 			eta3 = log(eta3);
-			eta3 += log(1E2)*randh(); // range of prior support
-			wrap(eta3, log(1.), log(1E2)); // wrap around inside prior
+			eta3 += log(30.)*randh(); // range of prior support
+			wrap(eta3, log(10.), log(40.)); // wrap around inside prior
 			eta3 = exp(eta3);
 		}
 		else
 		{
 			eta4 = log(eta4);
-			eta4 += log(1E4)*randh(); // range of prior support
-			wrap(eta4, log(1E-3), log(1E1)); // wrap around inside prior
+			eta4 += log(1E2)*randh(); // range of prior support
+			wrap(eta4, log(1E-1), log(1E1)); // wrap around inside prior
 			eta4 = exp(eta4);
 		}
 		calculate_C();
