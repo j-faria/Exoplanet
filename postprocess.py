@@ -223,7 +223,7 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 
 	# Resample to uniform weight
 	N = int(moreSamples*ESS)
-	posterior_sample = np.zeros((N, sample.shape[1]))
+	posterior_sample = np.zeros((N, sample.shape[1]+1))
 	w = P_samples
 	w = w/np.max(w)
 	if save:
@@ -233,7 +233,8 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 			which = np.random.randint(sample.shape[0])
 			if np.random.rand() <= w[which]:
 				break
-		posterior_sample[i,:] = sample[which,:]
+		posterior_sample[i,:-1] = sample[which,:]
+		posterior_sample[i,-1] = sample_info[which,1]
 	if save:
 		np.savetxt("posterior_sample.txt", posterior_sample,
 			       header='Posterior samples file. One sample per line\n' + sample_file_header)
