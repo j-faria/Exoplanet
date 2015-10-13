@@ -72,14 +72,14 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 		if numResampleLogX > 1:
 			plt.ion()
 
-		plt.figure(1)
+		plt.figure()
 		plt.plot(sample_info[:,0])
 		plt.xlabel("Iteration")
 		plt.ylabel("Level")
 		if numResampleLogX > 1:
 			plt.draw()
 
-		plt.figure(2)
+		plt.figure()
 		plt.subplot(2,1,1)
 		plt.plot(np.diff(levels_orig[:,0]))
 		plt.ylabel("Compression")
@@ -177,12 +177,10 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 		H_estimates[z] = -logz_estimates[z] + np.sum(P_samples[:,z]*logl)
 
 		if plot:
-			plt.figure(3)
+			plt.figure()
 
 			plt.subplot(2,1,1)
-			plt.hold(False)
 			plt.plot(logx_samples[:,z], sample_info[:,1], 'b.', label='Samples')
-			plt.hold(True)
 			plt.plot(levels[1:,0], levels[1:,1], 'r.', label='Levels')
 			plt.legend(numpoints=1, loc='lower left')
 			plt.ylabel('log(L)')
@@ -204,7 +202,6 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 
 		if plot:
 			plt.subplot(2,1,2)
-			plt.hold(False)
 			plt.plot(logx_samples[:,z], P_samples[:,z], 'b.')
 			plt.ylabel('Posterior Weights')
 			plt.xlabel('log(X)')
@@ -242,8 +239,8 @@ def postprocess(temperature=1., numResampleLogX=1, plot=True, loaded=[], \
 			       header='Posterior samples file. One sample per line\n' + sample_file_header)
 
 	if plot:
-		if numResampleLogX > 1:
-			plt.ioff()
+		# if numResampleLogX > 1:
+		# 	plt.ioff()
 		plt.show()
 
 	return [logz_estimate, H_estimate, logx_samples, posterior_sample]
